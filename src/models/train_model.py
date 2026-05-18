@@ -9,6 +9,12 @@ FEATURE_COLUMNS = [
     "last_10_win_pct_diff",
     "avg_points_last_10_diff",
     "avg_plus_minus_last_10_diff",
+    "season_win_pct_diff",
+    "season_avg_points_diff",
+    "season_avg_plus_minus_diff",
+    "rest_days_diff",
+    "home_back_to_back",
+    "away_back_to_back",
 ]
 
 TARGET_COLUMN = "home_team_won"

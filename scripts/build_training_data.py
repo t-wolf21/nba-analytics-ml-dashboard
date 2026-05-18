@@ -3,7 +3,7 @@ from pathlib import Path
 import pandas as pd
 
 from src.data.nba_data_client import NBADataClient
-from src.features.team_features import calculate_last_10_team_features
+from src.features.team_features import calculate_team_features
 from src.features.matchup_features import build_matchup_features
 
 
@@ -101,8 +101,8 @@ def build_training_data(season: str = "2025-26", max_games: int | None = None) -
             cache_dir=raw_cache_dir,
         )
 
-        home_features = calculate_last_10_team_features(home_games, game_date)
-        away_features = calculate_last_10_team_features(away_games, game_date)
+        home_features = calculate_team_features(home_games, game_date)
+        away_features = calculate_team_features(away_games, game_date)
 
         if (
             home_features["last_10_games_played"] < 10

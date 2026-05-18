@@ -63,6 +63,13 @@ predictions["matchup"] = predictions.apply(format_matchup, axis=1)
 predictions["home_win_pct"] = predictions["home_win_probability"].map(format_probability)
 predictions["away_win_pct"] = predictions["away_win_probability"].map(format_probability)
 
+if "home_season_win_pct" in predictions.columns and "away_season_win_pct" in predictions.columns:
+    predictions["home_season_record"] = predictions["home_season_win_pct"].map(format_probability)
+    predictions["away_season_record"] = predictions["away_season_win_pct"].map(format_probability)
+else:
+    predictions["home_season_record"] = "N/A"
+    predictions["away_season_record"] = "N/A"
+
 st.subheader("Games")
 
 display_columns = [
@@ -71,9 +78,14 @@ display_columns = [
     "status",
     "home_win_pct",
     "away_win_pct",
+    "home_season_record",
+    "away_season_record",
     "last_10_win_pct_diff",
+    "season_win_pct_diff",
     "avg_points_last_10_diff",
+    "season_avg_points_diff",
     "avg_plus_minus_last_10_diff",
+    "season_avg_plus_minus_diff",
 ]
 
 st.dataframe(
@@ -84,6 +96,8 @@ st.dataframe(
         "status": "Status",
         "home_win_pct": "Home win",
         "away_win_pct": "Away win",
+        "home_season_record": "Home season win rate",
+        "away_season_record": "Away season win rate",
         "last_10_win_pct_diff": st.column_config.NumberColumn(
             "Last 10 win pct diff",
             format="%.1f",
@@ -94,6 +108,18 @@ st.dataframe(
         ),
         "avg_plus_minus_last_10_diff": st.column_config.NumberColumn(
             "Avg plus-minus diff",
+            format="%.1f",
+        ),
+        "season_win_pct_diff": st.column_config.NumberColumn(
+            "Season win pct diff",
+            format="%.1f",
+        ),
+        "season_avg_points_diff": st.column_config.NumberColumn(
+            "Season avg points diff",
+            format="%.1f",
+        ),
+        "season_avg_plus_minus_diff": st.column_config.NumberColumn(
+            "Season avg plus-minus diff",
             format="%.1f",
         ),
     },
@@ -121,6 +147,17 @@ metric_col3.metric(
     format_probability(selected_game["away_win_probability"]),
 )
 
+if "home_season_win_pct" in selected_game and "away_season_win_pct" in selected_game:
+    record_col1, record_col2 = st.columns(2)
+    record_col1.metric(
+        f"{selected_game['home_team']} season win rate",
+        format_probability(selected_game["home_season_win_pct"]),
+    )
+    record_col2.metric(
+        f"{selected_game['away_team']} season win rate",
+        format_probability(selected_game["away_season_win_pct"]),
+    )
+
 st.progress(
     float(selected_game["home_win_probability"]),
     text=f"{selected_game['home_team']}: {format_probability(selected_game['home_win_probability'])}",
@@ -139,6 +176,18 @@ feature_details = pd.DataFrame(
         {
             "feature": "Avg plus-minus last 10 diff",
             "value": selected_game["avg_plus_minus_last_10_diff"],
+        },
+        {
+            "feature": "Season win pct diff",
+            "value": selected_game["season_win_pct_diff"],
+        },
+        {
+            "feature": "Season avg points diff",
+            "value": selected_game["season_avg_points_diff"],
+        },
+        {
+            "feature": "Season avg plus-minus diff",
+            "value": selected_game["season_avg_plus_minus_diff"],
         },
     ]
 )

@@ -4,7 +4,7 @@ import joblib
 import pandas as pd
 
 from src.data.nba_data_client import NBADataClient
-from src.features.team_features import calculate_last_10_team_features
+from src.features.team_features import calculate_team_features
 from src.features.matchup_features import build_matchup_features
 from src.models.train_model import FEATURE_COLUMNS
 
@@ -39,8 +39,8 @@ def predict_game(
     home_games = team_games_cache[home_team_id]
     away_games = team_games_cache[away_team_id]
 
-    home_features = calculate_last_10_team_features(home_games, game_date)
-    away_features = calculate_last_10_team_features(away_games, game_date)
+    home_features = calculate_team_features(home_games, game_date)
+    away_features = calculate_team_features(away_games, game_date)
 
     matchup_features = build_matchup_features(home_features, away_features)
 
@@ -92,6 +92,11 @@ def predict_games_for_date(game_date, season: str = "2025-26") -> pd.DataFrame:
                 "last_10_win_pct_diff": features["last_10_win_pct_diff"],
                 "avg_points_last_10_diff": features["avg_points_last_10_diff"],
                 "avg_plus_minus_last_10_diff": features["avg_plus_minus_last_10_diff"],
+                "home_season_win_pct": features["home_season_win_pct"],
+                "away_season_win_pct": features["away_season_win_pct"],
+                "season_win_pct_diff": features["season_win_pct_diff"],
+                "season_avg_points_diff": features["season_avg_points_diff"],
+                "season_avg_plus_minus_diff": features["season_avg_plus_minus_diff"],
             }
         )
 
